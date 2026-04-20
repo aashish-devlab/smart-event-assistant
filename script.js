@@ -170,8 +170,34 @@ function showToast(message) {
     }, 3000);
 }
 
+// Insight Engine / Bento Grid
+function updateSmartInsight() {
+    let lowestWait = Infinity;
+    let lowestLoc = null;
+    let bestExit = "Gate B"; // Default
+    
+    for (const key in locationData) {
+        if (key === "overall") continue;
+        const data = locationData[key];
+        const wait = data.level === "High" ? 25 : (data.level === "Medium" ? 10 : 0);
+        
+        if (wait < lowestWait) {
+            lowestWait = wait;
+            lowestLoc = data.name;
+        }
+        
+        if (data.name.includes("Gate") && wait === 0) {
+            bestExit = data.name;
+        }
+    }
+    
+    document.getElementById("tile-crowd-heading").textContent = lowestLoc || "N/A";
+    document.getElementById("tile-exit-heading").textContent = bestExit;
+}
+
 // Initialize default state
 window.addEventListener('DOMContentLoaded', () => {
+    updateSmartInsight(); // Trigger insight banner compilation
     locationSelect.value = "overall";
     locationSelect.dispatchEvent(new Event("change"));
 });
