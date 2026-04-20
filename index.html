@@ -11,12 +11,7 @@
     
     <div class="app-container">
         <!-- Top Navbar -->
-        <!-- Minimal Floating Action Button -->
-        <button class="floating-btn" id="btn-find-route-float" onclick="document.getElementById('btn-find-route').click()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
-            <span>Optimize</span>
-        </button>
-
+        <!-- Minimal Floating Action Button Removed -->
         <button id="btn-find-route" style="display: none;"></button> <!-- Hidden trigger for logic -->
 
 
@@ -147,36 +142,35 @@
             <img src="ai_abstract_3d_1776699835931.png" class="ai-3d-art" alt="AI Cloud">
             
             <div class="chat-center-wrapper">
+                <span class="ai-badge">AI-powered Event Assistant</span>
                 <h2 style="position: relative; z-index: 2; margin-bottom: 8px;"><svg width="22" height="22" style="vertical-align: text-bottom; margin-right: 6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> AI Assistant</h2>
                 <p class="subtitle" style="position: relative; z-index: 2;">Ask anything about the event</p>
 
                 <div class="chat-window" id="chat-window">
                     <div class="message bot">
+                        <div class="ai-avatar"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg></div>
                         <div class="bubble">Hello. I am your event assistant. How can I help you navigate the venue?</div>
                     </div>
                     <div class="message user">
                         <div class="bubble">Where is the fastest exit right now?</div>
                     </div>
                     <div class="message bot">
+                        <div class="ai-avatar"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg></div>
                         <div class="bubble">Gate B currently has the lowest traffic and is practically empty. You can exit smoothly through there.</div>
                     </div>
                     <div class="message user">
                         <div class="bubble">Are there any food options near Gate B?</div>
                     </div>
                     <div class="message bot">
+                        <div class="ai-avatar"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg></div>
                         <div class="bubble">Yes! The main Food Court is just a 2-minute walk from Gate B. However, wait times there are currently around 10 minutes.</div>
                     </div>
                     <div class="message user">
-                        <div class="bubble">Can you tell me if the Parking lot is full?</div>
+                        <div class="bubble">What about parking?</div>
                     </div>
                     <div class="message bot">
-                        <div class="bubble">Parking is currently at medium capacity. There is plenty of space, though it may take a few minutes to find an optimal spot.</div>
-                    </div>
-                    <div class="message user">
-                        <div class="bubble">Recommend a route.</div>
-                    </div>
-                    <div class="message bot">
-                        <div class="bubble">I recommend heading to the Food Court first, then using Gate B to exit smoothly. You can use the "Find Best Route" feature above for dynamic guidance.</div>
+                        <div class="ai-avatar"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg></div>
+                        <div class="bubble">Parking is currently at medium capacity. There is plenty of spot available near the main entrance.</div>
                     </div>
                 </div>
 

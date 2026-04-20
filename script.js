@@ -104,11 +104,36 @@ function handleChat(message) {
     appendMessage(message, "user");
     chatWindow.scrollTop = chatWindow.scrollHeight;
 
+    const typingIndicator = showTypingIndicator();
+    
     setTimeout(() => {
+        removeTypingIndicator(typingIndicator);
         const reply = generateBotResponse(message);
         appendMessage(reply, "bot");
         chatWindow.scrollTop = chatWindow.scrollHeight;
-    }, 600); 
+    }, 1500); 
+}
+
+function showTypingIndicator() {
+    const messageEl = document.createElement("div");
+    messageEl.className = "message bot typing";
+    messageEl.innerHTML = `
+        <div class="ai-avatar"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg></div>
+        <div class="bubble typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    `;
+    chatWindow.appendChild(messageEl);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    return messageEl;
+}
+
+function removeTypingIndicator(indicator) {
+    if (indicator && indicator.parentNode) {
+        indicator.parentNode.removeChild(indicator);
+    }
 }
 
 // Bind custom input
@@ -126,7 +151,13 @@ chatInput.addEventListener("keypress", (e) => {
 function appendMessage(text, sender) {
     const messageEl = document.createElement("div");
     messageEl.className = `message ${sender}`;
-    messageEl.innerHTML = `<div class="bubble">${text}</div>`;
+    
+    let avatar = "";
+    if (sender === "bot") {
+        avatar = `<div class="ai-avatar"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg></div>`;
+    }
+    
+    messageEl.innerHTML = `${avatar}<div class="bubble">${text}</div>`;
     chatWindow.appendChild(messageEl);
 }
 
@@ -208,4 +239,7 @@ window.addEventListener('DOMContentLoaded', () => {
     updateSmartInsight(); // Trigger insight banner compilation
     locationSelect.value = "overall";
     locationSelect.dispatchEvent(new Event("change"));
+    
+    // Ensure chat starts at bottom
+    chatWindow.scrollTop = chatWindow.scrollHeight;
 });
