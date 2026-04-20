@@ -357,6 +357,51 @@ select:focus {
     color: var(--accent-blue);
 }
 
+/* Crowd Visual Map */
+.crowd-visual-container {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-light);
+}
+
+.crowd-visual-map {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.map-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-base);
+    padding: 12px 16px;
+    border-radius: 12px;
+    transition: all 0.2s var(--ease-apple);
+}
+
+.map-item:hover {
+    transform: scale(1.02);
+    background: #fff;
+    box-shadow: var(--shadow-sm);
+}
+
+.map-item .name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.dot.status-low { background: var(--color-green); box-shadow: 0 0 8px var(--color-green); }
+.dot.status-medium { background: var(--color-orange); box-shadow: 0 0 8px var(--color-orange); }
+.dot.status-high { background: var(--color-red); box-shadow: 0 0 8px var(--color-red); }
+
 /* Chat Assistant Physics */
 .assistant-full-card {
     display: flex;

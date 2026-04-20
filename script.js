@@ -232,6 +232,29 @@ function updateSmartInsight() {
     document.getElementById("tile-crowd-heading").textContent = lowestLoc || "N/A";
     document.getElementById("tile-exit-heading").textContent = bestExit;
     document.getElementById("tile-avoid-heading").textContent = highestLoc || "N/A";
+    
+    updateCrowdMap(); // Keep map in sync
+}
+
+function updateCrowdMap() {
+    const mapContainer = document.getElementById("crowd-visual-map");
+    if (!mapContainer) return;
+    
+    mapContainer.innerHTML = "";
+    
+    for (const key in locationData) {
+        if (key === "overall") continue;
+        const data = locationData[key];
+        const statusClass = `status-${data.level.toLowerCase()}`;
+        
+        const item = document.createElement("div");
+        item.className = "map-item";
+        item.innerHTML = `
+            <div class="dot ${statusClass}"></div>
+            <span class="name">${data.name}</span>
+        `;
+        mapContainer.appendChild(item);
+    }
 }
 
 // Initialize default state
