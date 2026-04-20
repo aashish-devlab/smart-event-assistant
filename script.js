@@ -84,7 +84,7 @@ locationSelect.addEventListener("change", (e) => {
             statusDisplay.style.display = "block";
             
             const levelClass = data.level.toLowerCase();
-            crowdBadge.textContent = data.level.toUpperCase();
+            crowdBadge.textContent = data.level; // Standard case
             crowdBadge.className = `badge ${levelClass}`;
             waitTimeText.textContent = waitTimeStr;
             
@@ -161,10 +161,7 @@ btnCloseRoute.addEventListener("click", () => routeDisplay.style.display = "none
 function showToast(message) {
     const toast = document.createElement("div");
     toast.className = "toast";
-    toast.innerHTML = `
-        <svg fill="none" stroke="#4f46e5" stroke-width="2" width="20" height="20" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        <span>${message}</span>
-    `;
+    toast.innerHTML = `<span>${message}</span>`;
     toastContainer.appendChild(toast);
     setTimeout(() => {
         toast.classList.add("fade-out");
