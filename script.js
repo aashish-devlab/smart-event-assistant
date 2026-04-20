@@ -1,5 +1,6 @@
 // Location Mapping Data
 const locationData = {
+    "overall": { name: "Overall Venue", level: "Medium", alternate: null },
     "gate-a": { name: "Gate A", level: "High", alternate: "Gate B" },
     "gate-b": { name: "Gate B", level: "Low", alternate: null },
     "food-court": { name: "Food Court", level: "Medium", alternate: null },
@@ -168,3 +169,9 @@ function showToast(message) {
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
+
+// Initialize default state
+window.addEventListener('DOMContentLoaded', () => {
+    locationSelect.value = "overall";
+    locationSelect.dispatchEvent(new Event("change"));
+});
