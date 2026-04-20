@@ -1,10 +1,10 @@
 // Location Mapping Data
 const locationData = {
-    "overall": { name: "Overall Venue", level: "Medium", alternate: null },
-    "gate-a": { name: "Gate A", level: "High", alternate: "Gate B" },
-    "gate-b": { name: "Gate B", level: "Low", alternate: null },
-    "food-court": { name: "Food Court", level: "Medium", alternate: null },
-    "parking": { name: "Parking", level: "Medium", alternate: null }
+    "overall": { name: "Overall Venue", level: "Medium", alternate: null, currentWait: 10 },
+    "gate-a": { name: "Gate A", level: "High", alternate: "Gate B", currentWait: 25 },
+    "gate-b": { name: "Gate B", level: "Low", alternate: null, currentWait: 0 },
+    "food-court": { name: "Food Court", level: "Medium", alternate: null, currentWait: 10 },
+    "parking": { name: "Parking", level: "Medium", alternate: null, currentWait: 10 }
 };
 
 // DOM Nodes Cache
@@ -212,7 +212,7 @@ function updateSmartInsight() {
     for (const key in locationData) {
         if (key === "overall") continue;
         const data = locationData[key];
-        const wait = data.level === "High" ? 25 : (data.level === "Medium" ? 10 : 0);
+        const wait = data.currentWait;
         
         if (wait < lowestWait) {
             lowestWait = wait;
@@ -224,7 +224,7 @@ function updateSmartInsight() {
             highestLoc = data.name;
         }
         
-        if (data.name.includes("Gate") && wait === 0) {
+        if (data.name.includes("Gate") && wait < 5) {
             bestExit = data.name;
         }
     }
@@ -268,7 +268,31 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Start Auto-Update System
     setInterval(simulateRealTimeUpdates, 8000);
+
+    // Initialize Scroll Reveal
+    initScrollReveal();
 });
+
+// Scroll Reveal Observer
+function initScrollReveal() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px"
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("active");
+                observer.unobserve(entry.target); // Trigger once
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll(".reveal").forEach(el => {
+        observer.observe(el);
+    });
+}
 
 // Real-Time Update Logic
 function simulateRealTimeUpdates() {
@@ -280,13 +304,20 @@ function simulateRealTimeUpdates() {
     for (let i = 0; i < shiftCount; i++) {
         const randomKey = keys[Math.floor(Math.random() * keys.length)];
         const currentLevelIndex = levels.indexOf(locationData[randomKey].level);
-        // Step level up or down
         const direction = Math.random() > 0.5 ? 1 : -1;
         let nextIndex = currentLevelIndex + direction;
         if (nextIndex < 0) nextIndex = 1;
         if (nextIndex > 2) nextIndex = 1;
         
         locationData[randomKey].level = levels[nextIndex];
+    }
+
+    // Refresh all wait times with slight jitter
+    for (const key in locationData) {
+        const data = locationData[key];
+        let base = data.level === "High" ? 20 : (data.level === "Medium" ? 8 : 0);
+        let jitter = Math.floor(Math.random() * (data.level === "High" ? 15 : 6));
+        data.currentWait = base + jitter;
     }
     
     // Update venue-wide insights and maps
@@ -300,11 +331,11 @@ function simulateRealTimeUpdates() {
 
 function updateSelectionUI(val) {
     const data = locationData[val];
-    const wait = data.level === "High" ? "25 mins" : (data.level === "Medium" ? "10 mins" : "0 mins");
+    const wait = `${data.currentWait} mins`;
     
     // Smooth transition for data values
     applySmoothText(waitTimeText, wait);
-    applySmoothBadge(crowdBbadge, data.level);
+    applySmoothBadge(crowdBadge, data.level);
     
     // Update Logic Banner and Suggestions
     const suggestion = data.level === "High" 

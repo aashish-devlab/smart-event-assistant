@@ -62,7 +62,7 @@ body {
     justify-content: space-between;
     align-items: flex-start;
     padding: 180px 24px 120px 24px;
-    animation: slideFadeIn 0.4s ease-out forwards;
+    animation: slideFadeIn 0.8s var(--ease-apple) forwards;
 }
 
 .hero-title {
@@ -82,7 +82,7 @@ body {
     line-height: 1.3;
     letter-spacing: -0.015em;
     margin-top: 18px;
-    animation: slideFadeIn 0.4s ease-out 0.1s forwards;
+    animation: slideFadeIn 0.8s var(--ease-apple) 0.1s forwards;
     opacity: 0;
 }
 
@@ -92,8 +92,6 @@ body {
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
     margin-bottom: 24px;
-    animation: slideFadeIn 0.4s ease-out 0.2s forwards;
-    opacity: 0;
 }
 
 .bento-tile {
@@ -105,8 +103,6 @@ body {
     flex-direction: column;
     justify-content: center;
     transition: transform 0.4s var(--ease-apple), box-shadow 0.4s var(--ease-apple);
-    animation: slideFadeIn 0.8s var(--ease-apple) forwards;
-    opacity: 0;
 }
 
 .bento-tile:nth-child(1) { animation-delay: 0.1s; }
@@ -171,8 +167,6 @@ body {
 /* Apple Section Header */
 .section-header {
     margin: 24px 0 16px 8px;
-    animation: slideFadeIn 0.4s ease-out 0.3s forwards;
-    opacity: 0;
 }
 
 .section-header h2 {
@@ -192,8 +186,35 @@ body {
 .dashboard-content {
     display: block;
     margin-bottom: 24px;
-    animation: slideFadeIn 0.4s ease-out 0.4s forwards;
-    opacity: 0;
+}
+
+/* Button & Action Components */
+.btn-primary {
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-apple);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 113, 227, 0.15);
+}
+
+.btn-primary:hover {
+    background: var(--accent-blue-hover);
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(0, 113, 227, 0.25);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+    background: var(--accent-blue-active);
 }
 
 .dashboard-content .apple-card {
@@ -217,7 +238,7 @@ body {
 
 .apple-card:hover {
     box-shadow: var(--shadow-md);
-    transform: translateY(-6px);
+    transform: translateY(-4px);
 }
 
 .apple-card:nth-child(1) { animation-delay: 0.1s; }
@@ -422,8 +443,6 @@ select:focus {
     flex-direction: column;
     align-items: center;
     padding: 56px 40px;
-    animation: slideFadeIn 0.4s ease-out 0.5s forwards;
-    opacity: 0;
 }
 
 .chat-center-wrapper {
@@ -724,7 +743,7 @@ select:focus {
 
 @keyframes floatVertical {
     0% { transform: translateY(0); }
-    50% { transform: translateY(-8px); filter: drop-shadow(0 12px 10px rgba(0,0,0,0.06)); }
+    50% { transform: translateY(-6px); }
     100% { transform: translateY(0); }
 }
 
@@ -757,6 +776,20 @@ select:focus {
     animation: floatVertical 6s ease-in-out infinite alternate;
 }
 
+/* Scroll Reveal Utility */
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s var(--ease-apple);
+    pointer-events: none;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
 /* Responsiveness */
 @media (max-width: 860px) {
     body { padding: 24px 16px; }
@@ -777,8 +810,6 @@ select:focus {
 .cta-section {
     padding: 140px 24px;
     text-align: center;
-    animation: slideFadeIn 0.4s ease-out 0.6s forwards;
-    opacity: 0;
 }
 
 .cta-title {
