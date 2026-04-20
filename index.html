@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Event Assistant</title>
+    <meta name="description" content="Dynamically track event crowds and get smart suggestions.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="logo">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <h1>Smart Event Assistant</h1>
+    </header>
+
+    <main class="container">
+        <div class="dashboard-grid">
+            <!-- Location Tracker -->
+            <section class="card location-card">
+                <h2>Live Crowd Tracker</h2>
+                <p class="subtitle">Select a location to view its status</p>
+                <div class="input-group">
+                    <select id="location-select">
+                        <option value="" disabled selected>Choose a location...</option>
+                        <option value="gate-a">Gate A</option>
+                        <option value="gate-b">Gate B</option>
+                        <option value="food-court">Food Court</option>
+                        <option value="parking">Parking</option>
+                    </select>
+                    <div class="select-arrow"></div>
+                </div>
+
+                <div class="status-display" id="status-display" style="display: none;">
+                    <div class="crowd-level">
+                        <span class="label">Current Status:</span>
+                        <div class="status-indicator">
+                            <div class="indicator-dot" id="indicator-dot"></div>
+                            <span class="badge" id="crowd-badge">Loading...</span>
+                        </div>
+                    </div>
+                    
+                    <div class="wait-time-row">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <span>Estimated Wait: <strong id="wait-time-text">0 mins</strong></span>
+                    </div>
+
+                    <div class="suggestion-box" id="suggestion-box">
+                        <h3>Smart Suggestion</h3>
+                        <p id="suggestion-text">Please wait...</p>
+                        <p class="recommendation-text" id="recommendation-text"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chatbot -->
+            <section class="card chat-card">
+                <h2>AI Assistant</h2>
+                <div class="chat-window" id="chat-window">
+                    <div class="message bot">
+                        <div class="avatar">AI</div>
+                        <div class="bubble">Hello! I'm your Event Assistant. How can I help you today?</div>
+                    </div>
+                </div>
+                <div class="chat-controls">
+                    <button class="chip" onclick="handleChat('Where is food?')">Where is food?</button>
+                    <button class="chip" onclick="handleChat('Best exit?')">Best exit?</button>
+                    <button class="chip" onclick="handleChat('Crowd status?')">Crowd status?</button>
+                    <button class="chip" onclick="handleChat('Parking?')">Parking?</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
