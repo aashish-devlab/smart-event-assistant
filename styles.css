@@ -60,9 +60,9 @@ body {
 .hero-section {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start; /* Shifted to top-weighted for better balance */
+    align-items: flex-start;
     padding: 180px 24px 120px 24px;
-    animation: slideFadeIn 1s var(--ease-apple) forwards;
+    animation: slideFadeIn 0.4s ease-out forwards;
 }
 
 .hero-title {
@@ -81,8 +81,9 @@ body {
     max-width: 40%;
     line-height: 1.3;
     letter-spacing: -0.015em;
-    margin-top: 18px; /* Offset to align with title weight */
-    animation: slideFadeIn 1.2s var(--ease-apple) forwards;
+    margin-top: 18px;
+    animation: slideFadeIn 0.4s ease-out 0.1s forwards;
+    opacity: 0;
 }
 
 /* Bento Grid */
@@ -91,6 +92,8 @@ body {
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
     margin-bottom: 24px;
+    animation: slideFadeIn 0.4s ease-out 0.2s forwards;
+    opacity: 0;
 }
 
 .bento-tile {
@@ -168,7 +171,8 @@ body {
 /* Apple Section Header */
 .section-header {
     margin: 24px 0 16px 8px;
-    animation: slideFadeIn 0.8s var(--ease-apple) forwards;
+    animation: slideFadeIn 0.4s ease-out 0.3s forwards;
+    opacity: 0;
 }
 
 .section-header h2 {
@@ -188,6 +192,8 @@ body {
 .dashboard-content {
     display: block;
     margin-bottom: 24px;
+    animation: slideFadeIn 0.4s ease-out 0.4s forwards;
+    opacity: 0;
 }
 
 .dashboard-content .apple-card {
@@ -416,6 +422,8 @@ select:focus {
     flex-direction: column;
     align-items: center;
     padding: 56px 40px;
+    animation: slideFadeIn 0.4s ease-out 0.5s forwards;
+    opacity: 0;
 }
 
 .chat-center-wrapper {
@@ -710,8 +718,8 @@ select:focus {
 }
 
 @keyframes slideFadeIn {
-    from { opacity: 0; transform: translateY(32px); filter: blur(4px); }
-    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes floatVertical {
@@ -769,7 +777,8 @@ select:focus {
 .cta-section {
     padding: 140px 24px;
     text-align: center;
-    animation: fadeIn 1s var(--ease-apple) forwards;
+    animation: slideFadeIn 0.4s ease-out 0.6s forwards;
+    opacity: 0;
 }
 
 .cta-title {
