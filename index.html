@@ -35,22 +35,25 @@
             <p class="hero-subtitle">The smartest way to navigate crowded events.</p>
         </section>
 
-        <!-- Features Bento Grid -->
+        <!-- Live Smart Insights Section -->
+        <div class="section-header" style="margin-top: 24px;">
+            <h2><strong>Live.</strong> Smart Insights</h2>
+        </div>
         <div class="bento-grid">
-            <div class="bento-tile">
-                <span class="bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28"><path d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></span>
-                <h3 id="tile-exit-heading">Loading...</h3>
+            <div class="bento-tile shadow-hover">
+                <span class="bento-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><path d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg></span>
+                <h3 id="tile-exit-heading">Calculating...</h3>
                 <p class="bento-label">Best Exit</p>
             </div>
-            <div class="bento-tile">
-                <span class="bento-icon" style="color: var(--color-green)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
-                <h3 id="tile-crowd-heading">Loading...</h3>
+            <div class="bento-tile shadow-hover">
+                <span class="bento-icon" style="color: #34c759"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></span>
+                <h3 id="tile-crowd-heading">Scanning...</h3>
                 <p class="bento-label">Lowest Crowd</p>
             </div>
-            <div class="bento-tile bento-action" onclick="document.getElementById('btn-find-route').click()">
-                <span class="bento-icon" style="color: var(--accent-blue)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg></span>
-                <h3>Optimize</h3>
-                <p class="bento-label">Fastest Route</p>
+            <div class="bento-tile shadow-hover">
+                <span class="bento-icon" style="color: #ff3b30"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg></span>
+                <h3 id="tile-avoid-heading" style="color: #ff3b30">Scanning...</h3>
+                <p class="bento-label">Avoid Area</p>
             </div>
         </div>
 

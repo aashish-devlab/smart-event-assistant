@@ -174,6 +174,8 @@ function showToast(message) {
 function updateSmartInsight() {
     let lowestWait = Infinity;
     let lowestLoc = null;
+    let highestWait = -1;
+    let highestLoc = null;
     let bestExit = "Gate B"; // Default
     
     for (const key in locationData) {
@@ -185,6 +187,11 @@ function updateSmartInsight() {
             lowestWait = wait;
             lowestLoc = data.name;
         }
+
+        if (wait > highestWait) {
+            highestWait = wait;
+            highestLoc = data.name;
+        }
         
         if (data.name.includes("Gate") && wait === 0) {
             bestExit = data.name;
@@ -193,6 +200,7 @@ function updateSmartInsight() {
     
     document.getElementById("tile-crowd-heading").textContent = lowestLoc || "N/A";
     document.getElementById("tile-exit-heading").textContent = bestExit;
+    document.getElementById("tile-avoid-heading").textContent = highestLoc || "N/A";
 }
 
 // Initialize default state
