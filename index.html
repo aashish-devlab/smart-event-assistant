@@ -3,28 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Event Assistant</title>
+    <title>Smart Event Assistant - SaaS Dashboard</title>
     <meta name="description" content="Dynamically track event crowds and get smart suggestions.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="app-header">
-        <div class="logo">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-        </div>
-        <h1>Smart Event Assistant</h1>
-    </header>
+    
+    <div class="app-wrapper">
+        <!-- Top Navbar -->
+        <header class="navbar">
+            <div class="nav-left">
+                <div class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                </div>
+                <h1>Smart Event Assistant</h1>
+            </div>
+            <div class="nav-right">
+                <button class="btn-gradient" id="btn-find-route">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Find Best Route
+                </button>
+            </div>
+        </header>
 
-    <main class="container">
-        <div class="dashboard-grid">
-            <!-- Location Tracker -->
-            <section class="card location-card">
-                <h2><svg width="20" height="20" style="vertical-align: bottom; margin-right: 4px;" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Live Crowd Tracker</h2>
-                <p class="subtitle">Select a location to view its status</p>
-                <div class="input-group">
+        <!-- Route Display Modal/Banner (hidden by default) -->
+        <div class="route-display-container" id="route-display" style="display: none;">
+            <div class="route-header">
+                <h3>Recommended Route</h3>
+                <button class="btn-close" id="btn-close-route">&times;</button>
+            </div>
+            <ol class="route-steps" id="route-steps"></ol>
+        </div>
+
+        <!-- Two Column Main Section -->
+        <main class="dashboard-content">
+            
+            <!-- Left Card: Tracker -->
+            <section class="glass-card tracker-card">
+                <div class="card-header">
+                    <h2>Live Crowd Tracker</h2>
+                    <p>Select a location to view its status</p>
+                </div>
+                
+                <div class="input-container">
                     <select id="location-select">
                         <option value="" disabled selected>Choose a location...</option>
                         <option value="gate-a">Gate A</option>
@@ -32,76 +56,79 @@
                         <option value="food-court">Food Court</option>
                         <option value="parking">Parking</option>
                     </select>
-                    <div class="select-arrow"></div>
+                    <div class="select-arrows">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
                 </div>
 
-                <div id="loading-spinner" class="loading-spinner" style="display: none;">
-                    <svg class="spinner-svg" viewBox="0 0 50 50"><circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle></svg>
-                    <span>Checking live crowd status...</span>
+                <!-- Loading state -->
+                <div id="loading-spinner" class="loading-state" style="display: none;">
+                    <div class="pulse-ring"></div>
+                    <span>Analyzing crowd data...</span>
                 </div>
 
                 <div class="status-display" id="status-display" style="display: none;">
-                    <div class="crowd-level">
-                        <span class="label">Current Status:</span>
-                        <div class="status-indicator">
-                            <div class="indicator-dot" id="indicator-dot"></div>
-                            <span class="badge" id="crowd-badge">Loading...</span>
+                    <div class="status-row">
+                        <div class="wait-time-col">
+                            <span class="label">Estimated Wait</span>
+                            <strong id="wait-time-text">0 mins</strong>
+                        </div>
+                        <div class="status-col">
+                            <span class="label">Status</span>
+                            <div class="badge" id="crowd-badge">Loading...</div>
                         </div>
                     </div>
-                    
-                    <div class="wait-time-row">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                        <span>Estimated Wait: <strong id="wait-time-text">0 mins</strong></span>
-                    </div>
 
-                    <div class="suggestion-box" id="suggestion-box">
-                        <h3><svg width="16" height="16" style="vertical-align: text-bottom; margin-right: 4px;" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21h6 M12 21v-4 M8.4 16h7.2 M7 10a5 5 0 1 1 10 0 4.9 4.9 0 0 1-2.2 4H9.2A4.9 4.9 0 0 1 7 10z"/></svg> Smart Suggestion</h3>
-                        <p id="suggestion-text">Please wait...</p>
-                        <p class="recommendation-text" id="recommendation-text"></p>
+                    <div class="smart-suggestion-box">
+                        <div class="suggestion-header">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21h6"></path><path d="M12 21v-4"></path><path d="M8.4 16h7.2"></path><path d="M7 10a5 5 0 1 1 10 0 4.9 4.9 0 0 1-2.2 4H9.2A4.9 4.9 0 0 1 7 10z"></path></svg>
+                            <h3>Smart Suggestion</h3>
+                        </div>
+                        <p class="suggestion-core" id="suggestion-text">Please wait...</p>
+                        <div class="warning-line">
+                            <p id="recommendation-text"></p>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Best Route Finder -->
-            <section class="card route-card">
-                <h2>Best Route Finder</h2>
-                <p class="subtitle">Get the fastest path through the event</p>
-                
-                <div class="input-group" style="margin-bottom: 0;">
-                    <button class="btn-primary" id="btn-find-route">
-                        <svg width="18" height="18" style="vertical-align: text-bottom; margin-right: 4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                        Find Best Route
-                    </button>
+            <!-- Right Card: AI Assistant -->
+            <section class="glass-card ai-card">
+                <div class="card-header flex-header">
+                    <div>
+                        <h2>AI Assistant</h2>
+                        <p>Ask anything about the event</p>
+                    </div>
+                    <div class="placeholder-graphic">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    </div>
                 </div>
-                
-                <div class="route-display" id="route-display" style="display: none;">
-                    <ol class="route-steps" id="route-steps">
-                        <!-- steps injected here -->
-                    </ol>
-                </div>
-            </section>
 
-            <!-- Chatbot -->
-            <section class="card chat-card">
-                <h2>AI Assistant</h2>
                 <div class="chat-window" id="chat-window">
                     <div class="message bot">
-                        <div class="avatar">AI</div>
                         <div class="bubble">Hello! I'm your Event Assistant. How can I help you today?</div>
                     </div>
                 </div>
-                <div class="chat-controls">
-                    <button class="chip" onclick="handleChat('Where should I go now?')">Where should I go now?</button>
-                    <button class="chip" onclick="handleChat('Is it crowded?')">Is it crowded?</button>
-                    <button class="chip" onclick="handleChat('Fastest exit?')">Fastest exit?</button>
-                    <button class="chip" onclick="handleChat('Where is parking?')">Where is parking?</button>
+
+                <div class="suggested-queries">
+                    <button class="chip" onclick="handleChat('Where is food?')">Where is food?</button>
+                    <button class="chip" onclick="handleChat('Best exit?')">Best exit?</button>
+                    <button class="chip" onclick="handleChat('Crowd status?')">Crowd status?</button>
+                    <button class="chip" onclick="handleChat('Parking?')">Parking?</button>
+                </div>
+
+                <div class="chat-input-wrapper">
+                    <input type="text" id="chat-input" placeholder="Ask the assistant...">
+                    <button id="send-btn" onclick="sendCustomMessage()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    </button>
                 </div>
             </section>
-        </div>
-    </main>
+
+        </main>
+    </div>
 
     <div id="toast-container" class="toast-container"></div>
-
     <script src="script.js"></script>
 </body>
 </html>

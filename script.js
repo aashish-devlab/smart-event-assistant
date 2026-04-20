@@ -1,85 +1,55 @@
-// Define locations and their realistic static conditions
+// Location Mapping Data
 const locationData = {
-    "gate-a": { 
-        name: "Gate A", 
-        level: "High", 
-        alternate: "Gate B" 
-    },
-    "gate-b": { 
-        name: "Gate B", 
-        level: "Low", 
-        alternate: null 
-    },
-    "food-court": { 
-        name: "Food Court", 
-        level: "Medium", 
-        alternate: null 
-    },
-    "parking": { 
-        name: "Parking", 
-        level: "Medium", 
-        alternate: null 
-    }
+    "gate-a": { name: "Gate A", level: "High", alternate: "Gate B" },
+    "gate-b": { name: "Gate B", level: "Low", alternate: null },
+    "food-court": { name: "Food Court", level: "Medium", alternate: null },
+    "parking": { name: "Parking", level: "Medium", alternate: null }
 };
 
-// Dynamic Bot Response Engine
-let currentContext = null;
-
-function generateBotResponse(message) {
-    const loc = currentContext ? locationData[currentContext] : null;
-
-    switch (message) {
-        case "Where should I go now?":
-            if (loc && loc.level === "High") {
-                return `Since you're checking ${loc.name} and it's extremely crowded, I highly recommend detouring to ${loc.alternate || 'another gate'}.`;
-            } else if (loc && loc.level === "Medium") {
-                return `You're currently viewing ${loc.name}. The lines are moving, but the Food Court is a great place to stop and wait it out.`;
-            } else if (loc && loc.level === "Low") {
-                return `Since ${loc.name} is completely clear, head there immediately! It's the best option right now.`;
-            }
-            return "Based on the overall event traffic, Gate B and the Food Court are your best bets. Select a location in the tracker for personalized advice!";
-            
-        case "Is it crowded?":
-            if (loc) {
-                return `Currently, the crowd level at ${loc.name} is ${loc.level}. ${loc.level === "High" ? "Expect very long queues." : "You should have a pretty smooth path."}`;
-            }
-            return "Overall, the venue has a moderate crowd. Gate A is the busiest right now. Select a location to check its specific status.";
-            
-        case "Fastest exit?":
-            if (loc && loc.name.includes("Gate")) {
-                if (loc.level === "Low") return `You're already looking at ${loc.name}, which is presently the absolute fastest way out!`;
-                if (loc.alternate) return `Avoid ${loc.name} right now. The fastest exit is definitely bypassing that and going to ${loc.alternate}.`;
-            }
-            return "Gate B currently has the lowest traffic and is the absolute best route for a quick exit.";
-            
-        case "Where is parking?":
-            if (loc && loc.name === "Parking") {
-                return `You're currently checking the Parking status! It's moderately full, but Level 2 still has plenty of open space. Go straight there.`;
-            }
-            return "Parking is located on the West side of the venue. The main structure's first level is filling up, but head to Level 2 for guaranteed open spots.";
-            
-        default:
-            return "I'm not exactly sure about that. Try selecting a location first, or asking one of the suggested queries!";
-    }
-}
-
-// DOM Elements
+// DOM Nodes Cache
 const locationSelect = document.getElementById("location-select");
 const statusDisplay = document.getElementById("status-display");
 const crowdBadge = document.getElementById("crowd-badge");
-const indicatorDot = document.getElementById("indicator-dot");
 const waitTimeText = document.getElementById("wait-time-text");
 const suggestionText = document.getElementById("suggestion-text");
 const recommendationText = document.getElementById("recommendation-text");
-const chatWindow = document.getElementById("chat-window");
 const loadingSpinner = document.getElementById("loading-spinner");
+const chatWindow = document.getElementById("chat-window");
 const toastContainer = document.getElementById("toast-container");
-
 const btnFindRoute = document.getElementById("btn-find-route");
 const routeDisplay = document.getElementById("route-display");
 const routeSteps = document.getElementById("route-steps");
+const btnCloseRoute = document.getElementById("btn-close-route");
+const chatInput = document.getElementById("chat-input");
 
-// Location Tracker Logic
+let currentContext = null;
+
+// Chat Context Engine
+function generateBotResponse(message) {
+    const loc = currentContext ? locationData[currentContext] : null;
+    const msgLower = message.toLowerCase();
+
+    if (msgLower.includes("where should i go") || msgLower.includes("where is food")) {
+        if (loc && loc.level === "High") return `Since you're at ${loc.name} and it's crowded, detour to ${loc.alternate || 'another zone'}. Otherwise, Food Court is steady.`;
+        if (loc && loc.level === "Low") return `Since you're checking ${loc.name}, things are clear! The Food Court is also accessible moving inward.`;
+        return "The Food Court is centrally located. Simply follow the overhead signs or head inward from any gate!";
+    }
+    if (msgLower.includes("crowd") || msgLower.includes("busy")) {
+        if (loc) return `Right now, ${loc.name} is ${loc.level}. ${loc.level === "High" ? "It is very busy." : "It is steady."}`;
+        return "Currently Gate A is very crowded, but Gate B is clear. The rest of the venue is moderate.";
+    }
+    if (msgLower.includes("exit")) {
+        return "Gate B is presently your fastest exit line. It has extremely low wait times.";
+    }
+    if (msgLower.includes("parking")) {
+        if (loc && loc.name === "Parking") return "You are viewing Parking already! Head to Level 2 for the best availability.";
+        return "Parking is moderately filled. Bypass Level 1 and drive straight to Level 2.";
+    }
+
+    return "I'm ready to assist with Event operations! Try asking about crowds, exits, or food routes.";
+}
+
+// Location change tracker
 locationSelect.addEventListener("change", (e) => {
     const selected = e.target.value;
     currentContext = selected; 
@@ -87,11 +57,9 @@ locationSelect.addEventListener("change", (e) => {
     if (locationData[selected]) {
         const data = locationData[selected];
         
-        // Hide display, show spinner
         statusDisplay.style.display = "none";
         loadingSpinner.style.display = "flex";
         
-        // Simulate async data fetching
         setTimeout(() => {
             loadingSpinner.style.display = "none";
             
@@ -101,142 +69,84 @@ locationSelect.addEventListener("change", (e) => {
 
             if (data.level === "High") {
                 waitTimeStr = "15-20 mins";
-                suggestionMessage = `Traffic is very heavy at ${data.name}. We suggest using ${data.alternate} as an alternate location for much faster entry.`;
-                recommendationMessage = "Best time to visit is after 20 minutes";
+                suggestionMessage = `Traffic is heavy at ${data.name}. We suggest using ${data.alternate} as an alternate.`;
+                recommendationMessage = "Avoid unless necessary";
             } else if (data.level === "Medium") {
                 waitTimeStr = "5-10 mins";
-                suggestionMessage = `${data.name} is moderately busy. Please expect a short wait time in the queue.`;
-                if (data.name === "Parking") suggestionMessage += " First floor is full, but Level 2 should have spots.";
-                if (data.name === "Food Court") suggestionMessage += " Most popular stalls will have small lines.";
-                recommendationMessage = "Best time to visit is after 10 minutes";
+                suggestionMessage = `${data.name} is moderately busy. Expect a short wait.`;
+                recommendationMessage = "Proceed with caution";
             } else if (data.level === "Low") {
                 waitTimeStr = "0 mins";
-                suggestionMessage = `It's completely clear at ${data.name}! You can enter immediately.`;
-                recommendationMessage = "Best time to visit is right now";
+                suggestionMessage = `It's clear at ${data.name}! You can enter immediately.`;
+                recommendationMessage = "Path is optimal";
             }
 
             statusDisplay.style.display = "block";
             
             const levelClass = data.level.toLowerCase();
-            crowdBadge.textContent = data.level;
+            crowdBadge.textContent = data.level.toUpperCase();
             crowdBadge.className = `badge ${levelClass}`;
-            indicatorDot.className = `indicator-dot ${levelClass}`;
             waitTimeText.textContent = waitTimeStr;
             
-            suggestionText.style.opacity = "0";
-            recommendationText.style.opacity = "0";
+            suggestionText.textContent = suggestionMessage;
+            recommendationText.textContent = `💡 ${recommendationMessage}`;
             
-            setTimeout(() => {
-                suggestionText.textContent = suggestionMessage;
-                suggestionText.style.opacity = "1";
-                suggestionText.style.transition = "opacity 0.3s ease";
-                
-                recommendationText.textContent = `💡 ${recommendationMessage}`;
-                recommendationText.style.display = "block";
-                recommendationText.style.opacity = "1";
-                recommendationText.style.transition = "opacity 0.3s ease";
-                
-                // Show notification toast
-                showToast(`Status updated for ${data.name}`);
-            }, 50);
-        }, 600); // 600ms loading delay
+            showToast(`Dashboard synced with ${data.name}`);
+        }, 500); 
     }
 });
 
-// Chatbot Logic
+// Chatbot functionality
 function handleChat(message) {
     if(!message) return;
 
-    // Append user message
     appendMessage(message, "user");
     chatWindow.scrollTop = chatWindow.scrollHeight;
 
-    // Add immediate "Thinking" indicator
-    const typingId = "typing-" + Date.now();
-    appendMessage(". . .", "bot", typingId, true);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-
-    // Simulate think block
     setTimeout(() => {
-        // remove typing indicator
-        const typingEl = document.getElementById(typingId);
-        if (typingEl) typingEl.remove();
-
         const reply = generateBotResponse(message);
-        typeOutMessage(reply, "bot");
-    }, 500 + Math.random() * 500); 
+        appendMessage(reply, "bot");
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }, 600); 
 }
 
-function typeOutMessage(text, sender) {
-    const messageEl = document.createElement("div");
-    messageEl.className = `message ${sender}`;
-    const avatarTxt = "AI";
-    
-    const bubbleId = "bubble-" + Date.now();
-    messageEl.innerHTML = `
-        <div class="avatar">${avatarTxt}</div>
-        <div class="bubble" id="${bubbleId}"></div>
-    `;
-    chatWindow.appendChild(messageEl);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-
-    const bubbleEl = document.getElementById(bubbleId);
-    let i = 0;
-    
-    // Play character by character effect
-    const interval = setInterval(() => {
-        if (i < text.length) {
-            bubbleEl.textContent += text.charAt(i);
-            i++;
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        } else {
-            clearInterval(interval);
-        }
-    }, 20); // ms per character
+// Bind custom input
+function sendCustomMessage() {
+    const val = chatInput.value.trim();
+    if (val) {
+        handleChat(val);
+        chatInput.value = "";
+    }
 }
+chatInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendCustomMessage();
+});
 
-function appendMessage(text, sender, id = null, isStatus = false) {
+function appendMessage(text, sender) {
     const messageEl = document.createElement("div");
     messageEl.className = `message ${sender}`;
-    if (id) messageEl.id = id;
-    
-    const avatarTxt = sender === "user" ? "You" : "AI";
-    
-    // Create the message structure
-    messageEl.innerHTML = `
-        <div class="avatar">${avatarTxt}</div>
-        <div class="bubble" ${isStatus ? 'style="font-style: italic; color: #a1a1aa; background: transparent; border: none; padding: 0.75rem 0;"' : ''}>${text}</div>
-    `;
-    
+    messageEl.innerHTML = `<div class="bubble">${text}</div>`;
     chatWindow.appendChild(messageEl);
 }
 
-// Best Route Generator Logic
+// Route functionality
 function generateBestRoute() {
-    // Basic decision making logic based on current data
     const entries = ["gate-a", "gate-b"];
-    
-    // Find the gate with the lowest wait time or crowd level
-    const bestEntry = entries.reduce((prev, curr) => {
-        return locationData[curr].level === "Low" ? curr : prev;
-    });
-    
-    // Choose an amenity to visit. Food Court is standard, or just exit.
-    // For this simulation, we hardcode the structural steps but make data dynamic:
+    const bestEntry = entries.reduce((prev, curr) => locationData[curr].level === "Low" ? curr : prev);
     const amenity = "food-court";
 
     const stepsHtml = `
         <li class="route-step">
-            <div class="route-step-title">1. Enter via ${locationData[bestEntry].name}</div>
-            <div class="route-step-desc">Currently clear with the lowest wait time.</div>
+            <div class="route-step-title">1. Map to ${locationData[bestEntry].name}</div>
+            <div class="route-step-desc">Lowest queue metrics. Expected delay: negligible.</div>
         </li>
         <li class="route-step">
-            <div class="route-step-title">2. Pass through ${locationData[amenity].name}</div>
-            <div class="route-step-desc">${locationData[amenity].level === "Medium" ? "Moderate crowd, but moving steadily." : "Enjoy the clear space."}</div>
+            <div class="route-step-title">2. Pass via ${locationData[amenity].name}</div>
+            <div class="route-step-desc">Status: ${locationData[amenity].level}.</div>
         </li>
         <li class="route-step">
-            <div class="route-step-title">3. Head to the Main Event Floor</div>
-            <div class="route-step-desc">Follow the signs from the Food Court to your seats. path is optimal.</div>
+            <div class="route-step-title">3. Destination</div>
+            <div class="route-step-desc">Proceed to Main Floor.</div>
         </li>
     `;
     
@@ -245,19 +155,17 @@ function generateBestRoute() {
 }
 
 btnFindRoute.addEventListener("click", generateBestRoute);
+btnCloseRoute.addEventListener("click", () => routeDisplay.style.display = "none");
 
-// Toast System
+// UI Toasts
 function showToast(message) {
     const toast = document.createElement("div");
     toast.className = "toast";
     toast.innerHTML = `
-        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <svg fill="none" stroke="#4f46e5" stroke-width="2" width="20" height="20" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <span>${message}</span>
     `;
-    
     toastContainer.appendChild(toast);
-    
-    // Auto remove after 3s
     setTimeout(() => {
         toast.classList.add("fade-out");
         setTimeout(() => toast.remove(), 300);
