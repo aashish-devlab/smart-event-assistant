@@ -317,8 +317,84 @@ select:focus {
     background: #e8eaed;
 }
 
-/* Simple fade */
+/* Animations */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Buttons & Routes */
+.btn-primary {
+    background-color: var(--accent-primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 24px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s ease;
+}
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+
+.route-display {
+    margin-top: 1.5rem;
+    animation: fadeIn 0.3s ease;
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+}
+
+.route-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
+
+.route-steps::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    bottom: 20px;
+    left: 9px;
+    width: 2px;
+    background-color: var(--border-color);
+}
+
+.route-step {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.route-step:last-child {
+    margin-bottom: 0;
+}
+
+.route-step::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--bg-secondary);
+    border: 2px solid var(--accent-primary);
+    box-shadow: 0 0 0 4px var(--bg-secondary); /* Cut through the line */
+}
+
+.route-step-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.route-step-desc {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
 
 /* Responsive */
 @media (max-width: 768px) {

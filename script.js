@@ -40,6 +40,10 @@ const suggestionText = document.getElementById("suggestion-text");
 const recommendationText = document.getElementById("recommendation-text");
 const chatWindow = document.getElementById("chat-window");
 
+const btnFindRoute = document.getElementById("btn-find-route");
+const routeDisplay = document.getElementById("route-display");
+const routeSteps = document.getElementById("route-steps");
+
 // Location Tracker Logic
 locationSelect.addEventListener("change", (e) => {
     const selected = e.target.value;
@@ -130,3 +134,38 @@ function appendMessage(text, sender) {
     
     chatWindow.appendChild(messageEl);
 }
+
+// Best Route Generator Logic
+function generateBestRoute() {
+    // Basic decision making logic based on current data
+    const entries = ["gate-a", "gate-b"];
+    
+    // Find the gate with the lowest wait time or crowd level
+    const bestEntry = entries.reduce((prev, curr) => {
+        return locationData[curr].level === "Low" ? curr : prev;
+    });
+    
+    // Choose an amenity to visit. Food Court is standard, or just exit.
+    // For this simulation, we hardcode the structural steps but make data dynamic:
+    const amenity = "food-court";
+
+    const stepsHtml = `
+        <li class="route-step">
+            <div class="route-step-title">1. Enter via ${locationData[bestEntry].name}</div>
+            <div class="route-step-desc">Currently clear with the lowest wait time.</div>
+        </li>
+        <li class="route-step">
+            <div class="route-step-title">2. Pass through ${locationData[amenity].name}</div>
+            <div class="route-step-desc">${locationData[amenity].level === "Medium" ? "Moderate crowd, but moving steadily." : "Enjoy the clear space."}</div>
+        </li>
+        <li class="route-step">
+            <div class="route-step-title">3. Head to the Main Event Floor</div>
+            <div class="route-step-desc">Follow the signs from the Food Court to your seats. path is optimal.</div>
+        </li>
+    `;
+    
+    routeSteps.innerHTML = stepsHtml;
+    routeDisplay.style.display = "block";
+}
+
+btnFindRoute.addEventListener("click", generateBestRoute);
