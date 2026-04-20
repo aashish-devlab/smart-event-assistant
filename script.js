@@ -1,28 +1,24 @@
-// Data for locations
+// Define locations and their realistic static conditions
 const locationData = {
-    "gate-a": {
-        level: "High",
-        waitTime: 25,
-        recommendation: "Best time to visit is after 30 minutes",
-        suggestion: "Gate A is currently experiencing high traffic. Please consider using Gate B for a faster entry."
+    "gate-a": { 
+        name: "Gate A", 
+        level: "High", 
+        alternate: "Gate B" 
     },
-    "gate-b": {
-        level: "Low",
-        waitTime: 0,
-        recommendation: "Best time to visit is right now",
-        suggestion: "It's clear here! You can enter directly without any waiting."
+    "gate-b": { 
+        name: "Gate B", 
+        level: "Low", 
+        alternate: null 
     },
-    "food-court": {
-        level: "Medium",
-        waitTime: 15,
-        recommendation: "Best time to visit is after 15 minutes",
-        suggestion: "Expect an estimated wait time of 10-15 minutes for most food stalls."
+    "food-court": { 
+        name: "Food Court", 
+        level: "Medium", 
+        alternate: null 
     },
-    "parking": {
-        level: "Medium",
-        waitTime: 10,
-        recommendation: "Best time to visit is after 10 minutes",
-        suggestion: "Level 1 is nearly full. Head straight to Level 2 for plenty of parking space."
+    "parking": { 
+        name: "Parking", 
+        level: "Medium", 
+        alternate: null 
     }
 };
 
@@ -50,6 +46,27 @@ locationSelect.addEventListener("change", (e) => {
     if (locationData[selected]) {
         const data = locationData[selected];
         
+        let waitTimeStr = "";
+        let suggestionMessage = "";
+        let recommendationMessage = "";
+
+        // Smart decision system logic
+        if (data.level === "High") {
+            waitTimeStr = "15-20 mins";
+            suggestionMessage = `Traffic is very heavy at ${data.name}. We suggest using ${data.alternate} as an alternate location for much faster entry.`;
+            recommendationMessage = "Best time to visit is after 20 minutes";
+        } else if (data.level === "Medium") {
+            waitTimeStr = "5-10 mins";
+            suggestionMessage = `${data.name} is moderately busy. Please expect a short wait time in the queue.`;
+            if (data.name === "Parking") suggestionMessage += " First floor is full, but Level 2 should have spots.";
+            if (data.name === "Food Court") suggestionMessage += " Most popular stalls will have small lines.";
+            recommendationMessage = "Best time to visit is after 10 minutes";
+        } else if (data.level === "Low") {
+            waitTimeStr = "0 mins";
+            suggestionMessage = `It's completely clear at ${data.name}! You can enter immediately.`;
+            recommendationMessage = "Best time to visit is right now";
+        }
+
         // Show the status area
         statusDisplay.style.display = "block";
         
@@ -62,24 +79,21 @@ locationSelect.addEventListener("change", (e) => {
         indicatorDot.className = `indicator-dot ${levelClass}`;
 
         // Update wait time
-        waitTimeText.textContent = `${data.waitTime} mins`;
+        waitTimeText.textContent = waitTimeStr;
         
         // Update texts with a subtle animation
         suggestionText.style.opacity = "0";
         recommendationText.style.opacity = "0";
+        
         setTimeout(() => {
-            suggestionText.textContent = data.suggestion;
+            suggestionText.textContent = suggestionMessage;
             suggestionText.style.opacity = "1";
             suggestionText.style.transition = "opacity 0.3s ease";
             
-            if (data.recommendation) {
-                recommendationText.textContent = `💡 ${data.recommendation}`;
-                recommendationText.style.display = "block";
-                recommendationText.style.opacity = "1";
-                recommendationText.style.transition = "opacity 0.3s ease";
-            } else {
-                recommendationText.style.display = "none";
-            }
+            recommendationText.textContent = `💡 ${recommendationMessage}`;
+            recommendationText.style.display = "block";
+            recommendationText.style.opacity = "1";
+            recommendationText.style.transition = "opacity 0.3s ease";
         }, 150);
     }
 });
@@ -108,6 +122,7 @@ function appendMessage(text, sender) {
     
     const avatarTxt = sender === "user" ? "You" : "AI";
     
+    // Create the message structure
     messageEl.innerHTML = `
         <div class="avatar">${avatarTxt}</div>
         <div class="bubble">${text}</div>
