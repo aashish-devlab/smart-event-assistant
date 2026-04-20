@@ -311,10 +311,13 @@ select:focus {
 .chip:hover {
     background: #f8f9fa;
     color: var(--text-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .chip:active {
     background: #e8eaed;
+    transform: translateY(0);
 }
 
 /* Animations */
@@ -339,9 +342,93 @@ select:focus {
 
 .route-display {
     margin-top: 1.5rem;
-    animation: fadeIn 0.3s ease;
+    animation: fadeIn 0.4s ease;
     border-top: 1px solid var(--border-color);
     padding-top: 1.5rem;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    padding: 1rem 0;
+    animation: fadeIn 0.3s ease;
+}
+
+.spinner-svg {
+    animation: rotate 2s linear infinite;
+    width: 24px;
+    height: 24px;
+}
+.spinner-svg .path {
+    stroke: var(--accent-primary);
+    stroke-linecap: round;
+    animation: dash 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate { 100% { transform: rotate(360deg); } }
+@keyframes dash {
+  0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
+  50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
+  100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
+}
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 9999;
+}
+
+.toast {
+    background: #323232;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideInUp 0.3s ease forwards;
+    transform: translateY(100%);
+    opacity: 0;
+}
+
+.toast.fade-out {
+    animation: fadeOutDown 0.3s ease forwards;
+}
+
+@keyframes slideInUp { to { transform: translateY(0); opacity: 1; } }
+@keyframes fadeOutDown { to { transform: translateY(10px); opacity: 0; } }
+
+/* Buttons & Hovers */
+.btn-primary {
+    background-color: var(--accent-primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 24px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.btn-primary:active {
+    transform: translateY(0);
 }
 
 .route-steps {

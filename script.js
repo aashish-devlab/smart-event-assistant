@@ -72,6 +72,8 @@ const waitTimeText = document.getElementById("wait-time-text");
 const suggestionText = document.getElementById("suggestion-text");
 const recommendationText = document.getElementById("recommendation-text");
 const chatWindow = document.getElementById("chat-window");
+const loadingSpinner = document.getElementById("loading-spinner");
+const toastContainer = document.getElementById("toast-container");
 
 const btnFindRoute = document.getElementById("btn-find-route");
 const routeDisplay = document.getElementById("route-display");
@@ -80,60 +82,64 @@ const routeSteps = document.getElementById("route-steps");
 // Location Tracker Logic
 locationSelect.addEventListener("change", (e) => {
     const selected = e.target.value;
-    currentContext = selected; // Store the context for AI logic
+    currentContext = selected; 
     
     if (locationData[selected]) {
         const data = locationData[selected];
         
-        let waitTimeStr = "";
-        let suggestionMessage = "";
-        let recommendationMessage = "";
-
-        // Smart decision system logic
-        if (data.level === "High") {
-            waitTimeStr = "15-20 mins";
-            suggestionMessage = `Traffic is very heavy at ${data.name}. We suggest using ${data.alternate} as an alternate location for much faster entry.`;
-            recommendationMessage = "Best time to visit is after 20 minutes";
-        } else if (data.level === "Medium") {
-            waitTimeStr = "5-10 mins";
-            suggestionMessage = `${data.name} is moderately busy. Please expect a short wait time in the queue.`;
-            if (data.name === "Parking") suggestionMessage += " First floor is full, but Level 2 should have spots.";
-            if (data.name === "Food Court") suggestionMessage += " Most popular stalls will have small lines.";
-            recommendationMessage = "Best time to visit is after 10 minutes";
-        } else if (data.level === "Low") {
-            waitTimeStr = "0 mins";
-            suggestionMessage = `It's completely clear at ${data.name}! You can enter immediately.`;
-            recommendationMessage = "Best time to visit is right now";
-        }
-
-        // Show the status area
-        statusDisplay.style.display = "block";
+        // Hide display, show spinner
+        statusDisplay.style.display = "none";
+        loadingSpinner.style.display = "flex";
         
-        // Update badge text and color class
-        const levelClass = data.level.toLowerCase();
-        crowdBadge.textContent = data.level;
-        crowdBadge.className = `badge ${levelClass}`;
-        
-        // Update indicator dot color
-        indicatorDot.className = `indicator-dot ${levelClass}`;
-
-        // Update wait time
-        waitTimeText.textContent = waitTimeStr;
-        
-        // Update texts with a subtle animation
-        suggestionText.style.opacity = "0";
-        recommendationText.style.opacity = "0";
-        
+        // Simulate async data fetching
         setTimeout(() => {
-            suggestionText.textContent = suggestionMessage;
-            suggestionText.style.opacity = "1";
-            suggestionText.style.transition = "opacity 0.3s ease";
+            loadingSpinner.style.display = "none";
             
-            recommendationText.textContent = `💡 ${recommendationMessage}`;
-            recommendationText.style.display = "block";
-            recommendationText.style.opacity = "1";
-            recommendationText.style.transition = "opacity 0.3s ease";
-        }, 150);
+            let waitTimeStr = "";
+            let suggestionMessage = "";
+            let recommendationMessage = "";
+
+            if (data.level === "High") {
+                waitTimeStr = "15-20 mins";
+                suggestionMessage = `Traffic is very heavy at ${data.name}. We suggest using ${data.alternate} as an alternate location for much faster entry.`;
+                recommendationMessage = "Best time to visit is after 20 minutes";
+            } else if (data.level === "Medium") {
+                waitTimeStr = "5-10 mins";
+                suggestionMessage = `${data.name} is moderately busy. Please expect a short wait time in the queue.`;
+                if (data.name === "Parking") suggestionMessage += " First floor is full, but Level 2 should have spots.";
+                if (data.name === "Food Court") suggestionMessage += " Most popular stalls will have small lines.";
+                recommendationMessage = "Best time to visit is after 10 minutes";
+            } else if (data.level === "Low") {
+                waitTimeStr = "0 mins";
+                suggestionMessage = `It's completely clear at ${data.name}! You can enter immediately.`;
+                recommendationMessage = "Best time to visit is right now";
+            }
+
+            statusDisplay.style.display = "block";
+            
+            const levelClass = data.level.toLowerCase();
+            crowdBadge.textContent = data.level;
+            crowdBadge.className = `badge ${levelClass}`;
+            indicatorDot.className = `indicator-dot ${levelClass}`;
+            waitTimeText.textContent = waitTimeStr;
+            
+            suggestionText.style.opacity = "0";
+            recommendationText.style.opacity = "0";
+            
+            setTimeout(() => {
+                suggestionText.textContent = suggestionMessage;
+                suggestionText.style.opacity = "1";
+                suggestionText.style.transition = "opacity 0.3s ease";
+                
+                recommendationText.textContent = `💡 ${recommendationMessage}`;
+                recommendationText.style.display = "block";
+                recommendationText.style.opacity = "1";
+                recommendationText.style.transition = "opacity 0.3s ease";
+                
+                // Show notification toast
+                showToast(`Status updated for ${data.name}`);
+            }, 50);
+        }, 600); // 600ms loading delay
     }
 });
 
@@ -239,3 +245,21 @@ function generateBestRoute() {
 }
 
 btnFindRoute.addEventListener("click", generateBestRoute);
+
+// Toast System
+function showToast(message) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.innerHTML = `
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span>${message}</span>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Auto remove after 3s
+    setTimeout(() => {
+        toast.classList.add("fade-out");
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
