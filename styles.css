@@ -46,13 +46,8 @@ body {
     margin-bottom: 24px;
 }
 
-.nav-left {
-    display: flex;
-    align-items: center;
-}
-
 .nav-left h1 {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 600;
     letter-spacing: -0.01em;
 }
