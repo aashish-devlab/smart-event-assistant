@@ -265,4 +265,70 @@ window.addEventListener('DOMContentLoaded', () => {
     
     // Ensure chat starts at bottom
     chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    // Start Auto-Update System
+    setInterval(simulateRealTimeUpdates, 8000);
 });
+
+// Real-Time Update Logic
+function simulateRealTimeUpdates() {
+    const levels = ["Low", "Medium", "High"];
+    const keys = ["gate-a", "gate-b", "food-court", "parking"];
+    
+    // Randomly shift 1-2 locations
+    const shiftCount = Math.floor(Math.random() * 2) + 1;
+    for (let i = 0; i < shiftCount; i++) {
+        const randomKey = keys[Math.floor(Math.random() * keys.length)];
+        const currentLevelIndex = levels.indexOf(locationData[randomKey].level);
+        // Step level up or down
+        const direction = Math.random() > 0.5 ? 1 : -1;
+        let nextIndex = currentLevelIndex + direction;
+        if (nextIndex < 0) nextIndex = 1;
+        if (nextIndex > 2) nextIndex = 1;
+        
+        locationData[randomKey].level = levels[nextIndex];
+    }
+    
+    // Update venue-wide insights and maps
+    updateSmartInsight();
+
+    // If currently viewing a location, refresh its specific card smoothly
+    if (locationSelect.value !== "overall") {
+        updateSelectionUI(locationSelect.value);
+    }
+}
+
+function updateSelectionUI(val) {
+    const data = locationData[val];
+    const wait = data.level === "High" ? "25 mins" : (data.level === "Medium" ? "10 mins" : "0 mins");
+    
+    // Smooth transition for data values
+    applySmoothText(waitTimeText, wait);
+    applySmoothBadge(crowdBbadge, data.level);
+    
+    // Update Logic Banner and Suggestions
+    const suggestion = data.level === "High" 
+        ? `Strong crowds at ${data.name}. We recommend checking ${data.alternate || 'another zone'} instead.`
+        : `Conditions at ${data.name} are optimal. This is a good time to visit.`;
+    applySmoothText(suggestionText, suggestion);
+}
+
+function applySmoothText(el, text) {
+    if (el.textContent === text) return;
+    el.classList.add("data-updating");
+    setTimeout(() => {
+        el.textContent = text;
+        el.classList.remove("data-updating");
+    }, 300);
+}
+
+function applySmoothBadge(el, state) {
+    const color = state === "High" ? "var(--color-red)" : (state === "Medium" ? "var(--color-orange)" : "var(--color-green)");
+    el.style.opacity = "0";
+    setTimeout(() => {
+        el.textContent = state;
+        el.className = `badge status-${state.toLowerCase()}`;
+        el.style.color = color;
+        el.style.opacity = "1";
+    }, 300);
+}
